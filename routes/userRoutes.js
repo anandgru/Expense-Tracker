@@ -10,7 +10,11 @@ router.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, "../views","login.html"));
 });
 
-//app.use(express.static(path.join(__dirname, "public")));
+
+router.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, "../views","dashboard.html"));
+
+});
 router.get('/signup', (req, res) => {
     res.sendFile(path.join(__dirname, "../views","signup.html"));
 });

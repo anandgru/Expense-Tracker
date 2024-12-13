@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const User = require('./models/user');
+const expenseRoutes = require('./routes/expenseRoutes');
+
+
 
 
 const path = require('path');
@@ -22,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Routes
 app.use('/user', userRoutes);
+app.use(expenseRoutes);
 
 // Start Server
 app.listen(3000, () => {

@@ -8,7 +8,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 150vh;
 }
 
 /* Container Styling */
@@ -32,7 +32,7 @@ body {
 
 /* Form Styling */
 form {
-    display: flex;
+    display: grid;
     flex-direction: column;
     gap: 15px;
 }
@@ -91,5 +91,80 @@ footer {
 
     form button {
         font-size: 14px;
+    }
+}
+/* Style for the expense form container */
+#expenseForm {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 2px solid #007BFF; /* Primary color border */
+    border-radius: 10px;
+    background-color: #f9f9f9; /* Subtle background color */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    font-family: 'Arial', sans-serif;
+}
+
+/* Style for form inputs */
+#expenseForm input[type="text"],
+#expenseForm input[type="number"],
+#expenseForm select,
+#expenseForm button {
+    width: 96%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+/* Hover and focus states for inputs */
+#expenseForm input[type="text"]:focus,
+#expenseForm input[type="number"]:focus,
+#expenseForm select:focus {
+    border-color: #007BFF; /* Primary color for focus */
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Style for the dropdown */
+#expenseForm select {
+    background-color: #fff;
+    cursor: pointer;
+}
+
+/* Submit button styling */
+#expenseForm button {
+    background-color: #007BFF; /* Primary color */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#expenseForm button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Form header or title */
+#expenseForm h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    text-transform: capitalize;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 600px) {
+    #expenseForm {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    #expenseForm h2 {
+        font-size: 1.2rem;
     }
 }
