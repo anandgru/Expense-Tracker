@@ -20,6 +20,17 @@ const Expense=sequelize.define('Expense',{
     },
     category:{
         type: Sequelize.STRING
+    },
+    userId:{
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'Users',
+            key: 'id'
+        },
+        allowNull: false,
+        validate: {
+            isInt: true
+        }
     }
 });
 

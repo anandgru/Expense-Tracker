@@ -93,6 +93,7 @@ async function addExpense(event) {
     const amount = document.getElementById('amount').value;
     const description = document.getElementById('description').value;
     const category = document.getElementById('category').value;
+    //const userId=req.user.userId;
 
     if (!amount || !description || !category) {
         displayMessage('Please fill in all fields.', 'error');

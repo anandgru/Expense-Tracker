@@ -8,14 +8,14 @@ exports.addExpense = async (req, res) => {
     const { amount, description, category } = req.body;
     
 
-
     if ( !amount || !description || !category) {
         return res.status(400).json({ message: 'All fields are required.' });
     }
 
     try {
+        const userId = req.user.userId;
         
-        const expense = await Expense.create({ amount, description, category });
+        const expense = await Expense.create({ amount, description, category, userId});
         res.status(201).json(expense);
     } catch (error) {
         console.error('Error adding expense:', error);
@@ -26,7 +26,8 @@ exports.addExpense = async (req, res) => {
 // Controller to get all expenses for a user
 exports.getExpenses = async (req, res) => {
     try {
-        const expenses = await Expense.findAll();
+        const userId = req.user.userId;
+        const expenses = await Expense.findAll({where : {userId: userId}});
         res.status(200).json(expenses);
     } catch (error) {
         console.error('Error fetching expenses:', error);

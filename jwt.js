@@ -8,6 +8,7 @@ const jwtAuthMiddleware=(req, res, next) =>{
     try{
         const decoded=jwt.verify(token,'abcd');
         req.user=decoded;
+        //res.user = decoded;
         next();
     }catch(error){
         console.log('Error in JWT parsing:',token);

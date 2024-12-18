@@ -6,9 +6,6 @@ const {jwtAuthMiddleware} = require('../jwt');
 const router = express.Router();
 
 // Route to add a new expense
-
-
-
 router.post('/api/expenses', jwtAuthMiddleware, expenseController.addExpense);
 
 // Route to get all expenses for a user
