@@ -2,18 +2,19 @@
 
 const express = require('express');
 const expenseController = require('../controllers/expenseController');
+const {jwtAuthMiddleware} = require('../jwt');
 const router = express.Router();
 
 // Route to add a new expense
 
 
 
-router.post('/api/expenses', expenseController.addExpense);
+router.post('/api/expenses', jwtAuthMiddleware, expenseController.addExpense);
 
 // Route to get all expenses for a user
-router.get('/api/expenses', expenseController.getExpenses);
+router.get('/api/expenses', jwtAuthMiddleware, expenseController.getExpenses);
 
 // Route to delete an expense by ID
-router.delete('/api/expenses/:id', expenseController.deleteExpense);
+router.delete('/api/expenses/:id',jwtAuthMiddleware, expenseController.deleteExpense);
 
 module.exports = router;

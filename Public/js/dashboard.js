@@ -1,19 +1,33 @@
 // Function to fetch and display expenses on page load
+const token = localStorage.getItem('authToken');
 async function fetchExpenses() {
     try {
-        const response = await axios.get(`/api/expenses`);
+        if (!token) {
+            throw new Error('No token found.');
+        }
+        console.log(token);
+        const response = await axios.get(`/api/expenses`,{
+            headers: { Authorization: `Bearer ${token}` },
+        });
         const expenses = response.data;
         displayExpenses(expenses);
     } catch (error) {
         console.error('Error fetching expenses:', error);
-        displayMessage('Failed to load expenses.', 'error');
+        displayMessage('Failed to load expenses. 2', 'error');
     }
 }
 
 // Function to delete expense
 async function deleteExpense(id) {
     try {
-        await axios.delete(`/api/expenses/${id}`);
+        if (!token) {
+            throw new Error('No token found.');
+        }
+
+        // Send the DELETE request with the Authorization header
+        await axios.delete(`/api/expenses/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
         fetchExpenses();
         displayMessage('Expense deleted successfully.');
     } catch (error) {
@@ -52,7 +66,7 @@ function displayExpenses(expenses) {
         
         // Added On
         const dateCell = document.createElement('td');
-        const date = new Date(expense.created_at);
+        const date = new Date(expense.createdAt);
         dateCell.textContent = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
         row.appendChild(dateCell);
         
@@ -90,7 +104,13 @@ async function addExpense(event) {
             amount,
             description,
             category
-        });
+        }, 
+        {
+            headers: { 
+                Authorization: `Bearer ${token}` // Add the token in the Authorization header
+            }
+        }
+    );
         console.log(response.status);
 
         if (response.status === 201) {

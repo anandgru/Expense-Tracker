@@ -1,70 +1,77 @@
-const db = require('../config/database');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const path = require('path');
 
+// Secret key for JWT (should be stored securely, e.g., in environment variables)
+const JWT_SECRET = 'abcd';
+
+exports.signup = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    // Check if the user already exists
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists!' });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create the new user
+    const newUser = await User.create({ name, email, password: hashedPassword });
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: newUser.id, email }, JWT_SECRET, { expiresIn: '1h' });
+
+    // Send the token and user information as a response
+    res.status(201).json({
+      message: 'User created successfully!',
+      token,
+      user: { id: newUser.id, name: newUser.name, email: newUser.email },
+    });
+  } catch (error) {
+    console.error('Error in signup:', error);
+    res.status(500).json({ message: 'Error during signup.' });
+  }
+};
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  // Validate input
   if (!email || !password) {
-    return res.status(400).send('<h3>Email and password are required.</h3>');
+    return res.status(400).json({ message: 'Email and password are required.' });
   }
 
   try {
+    
     // Check if the user exists
-    const [user] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
-    if (user.length === 0) {
-      return res.status(404).send('<h3>User does not exist.</h3>');
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      
+      return res.status(404).json({ message: 'User does not exist.' });
     }
-
-    // Verify password
-    const isPasswordMatched = await bcrypt.compare(password, user[0].password);
+    
+    // Verify the password
+    const isPasswordMatched = await bcrypt.compare(password, user.password);
     if (!isPasswordMatched) {
-      return res.status(401).send('<h3>Password not matched.</h3>');
+      console.log('Aya to');
+      return res.status(401).json({ message: 'Invalid password.' });
     }
-    // Successful login
-    //res.redirect(`/api/expenses?userId=${user.id}`);
-    res.sendFile(path.join(__dirname, '../views/dashboard.html'));
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id, email }, JWT_SECRET, { expiresIn: '1h' });
+
+    console.log('Aya to2', token);
+
+    // Send the token and user information as a response
+    res.status(200).json({
+      message: 'Login successful!',
+      token,
+      user: { id: user.id, name: user.name, email: user.email },
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).send('<h3>Internal server error.</h3>');
+    console.error('Error in login:', error);
+    res.status(500).json({ message: 'Error during login.' });
   }
-};
-
-
-
-exports.signup = async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
-
-        // Check if email already exists
-       const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-       console.log(existingUser);
-        if (existingUser.length > 0) {
-            return res.status(409).send('User already exists.');
-        }
-
-
-        // Validate password length
-        //if (password.length < 8) {
-          //  return res.status(400).send('Password must be at least 8 characters long.');
-        //}
-
-        // Validate password complexity (at least one uppercase letter, one lowercase letter, one number, and one special character)
-
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Insert user into database
-        const query = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
-        await db.query(query, [name, email, hashedPassword]);
-
-        res.send(`
-            <h1>Signup Successful</h1>
-            <a href="/user/signup">Go back to Signup</a>
-        `);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
 };

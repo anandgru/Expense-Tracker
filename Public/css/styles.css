@@ -1,170 +1,235 @@
 /* General Styling */
 body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 150vh;
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 /* Container Styling */
 .container {
-    background: #ffffff;
-    color: #333;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    padding: 20px 30px;
-    max-width: 400px;
-    width: 100%;
+  background: linear-gradient(to bottom, #11cbaf, #d5fc25);
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  max-width: 550px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Header Styling */
 .container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #2575fc;
-    font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2575fc;
+  font-size: 1.5rem;
 }
 
 /* Form Styling */
 form {
-    display: grid;
-    flex-direction: column;
-    gap: 15px;
+  display: grid;
+  gap: 15px;
 }
 
 form label {
-    font-size: 14px;
-    margin-bottom: 5px;
+  font-size: 14px;
+  margin-bottom: 5px;
 }
 
 form input[type="text"],
 form input[type="email"],
 form input[type="password"] {
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border 0.3s ease;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-form input[type="text"]:focus,
-form input[type="email"]:focus,
-form input[type="password"]:focus {
-    border-color: #2575fc;
-    outline: none;
+form input:focus {
+  border-color: #2575fc;
+  outline: none;
+  box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
 }
 
 /* Button Styling */
 form button {
-    background: #2575fc;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+  background: #2575fc;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 form button:hover {
-    background: #1b5bb5;
+  background: #1b5bb5;
 }
 
 /* Footer Styling */
 footer {
-    text-align: center;
-    font-size: 12px;
-    margin-top: 15px;
-    color: #bbb;
+  text-align: center;
+  font-size: 12px;
+  margin-top: 15px;
+  color: #bbb;
 }
 
 /* Responsive Design */
 @media (max-width: 480px) {
-    .container {
-        padding: 15px 20px;
-    }
+  .container {
+    padding: 15px 20px;
+  }
 
-    form button {
-        font-size: 14px;
-    }
+  form button {
+    font-size: 14px;
+  }
 }
-/* Style for the expense form container */
+
+/* Expense Form Container */
 #expenseForm {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 2px solid #007BFF; /* Primary color border */
-    border-radius: 10px;
-    background-color: #f9f9f9; /* Subtle background color */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-    font-family: 'Arial', sans-serif;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 2px solid #007bff;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+  box-sizing: border-box;
 }
 
-/* Style for form inputs */
+/* Form Inputs and Dropdowns */
 #expenseForm input[type="text"],
 #expenseForm input[type="number"],
 #expenseForm select,
 #expenseForm button {
-    width: 96%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: border-color 0.3s ease-in-out;
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s ease-in-out;
+  box-sizing: border-box;
 }
 
-/* Hover and focus states for inputs */
-#expenseForm input[type="text"]:focus,
-#expenseForm input[type="number"]:focus,
+#expenseForm input:focus,
 #expenseForm select:focus {
-    border-color: #007BFF; /* Primary color for focus */
-    outline: none;
-    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-/* Style for the dropdown */
 #expenseForm select {
-    background-color: #fff;
-    cursor: pointer;
+  background-color: #fff;
+  cursor: pointer;
 }
 
-/* Submit button styling */
+/* Submit Button */
 #expenseForm button {
-    background-color: #007BFF; /* Primary color */
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 #expenseForm button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+  background-color: #0056b3;
 }
 
-/* Form header or title */
+/* Form Header */
 #expenseForm h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    text-transform: capitalize;
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
 }
 
-/* Adjustments for smaller screens */
+/* Responsive Adjustments */
 @media (max-width: 600px) {
-    #expenseForm {
-        max-width: 90%;
-        padding: 15px;
-    }
+  #expenseForm {
+    max-width: 90%;
+    padding: 15px;
+  }
 
-    #expenseForm h2 {
-        font-size: 1.2rem;
-    }
+  #expenseForm h2 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 16px;
+  text-align: left;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #4caf50;
+  color: white;
+  text-transform: uppercase;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+.delete-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #ff1a1a;
+}
+
+/* Empty Row */
+td[colspan="5"] {
+  text-align: center;
+  font-style: italic;
+  color: #999;
+}
+
+/* Mobile Table Adjustments */
+@media (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+
+  .delete-button {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
 }
