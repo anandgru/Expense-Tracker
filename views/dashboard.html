@@ -11,6 +11,23 @@
 <body>
     <div class="container">
         <p id="premium-status"></p>
+        <button id="show-leaderboard" style="display: none;" >Show Leaderboard</button>
+<div id="leaderboard-container" style="display: none;">
+    <h3>Leaderboard</h3>
+    <table id="leaderboard-table">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Total Expense</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Leaderboard data will be inserted here -->
+        </tbody>
+    </table>
+</div>
+
         <h1>Expense Tracker</h1>
         <button id="logout-button">Logout</button>
         <button id="buy-premium" class="buy-premium-button">Buy Premium</button>

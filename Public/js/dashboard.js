@@ -12,6 +12,7 @@ async function fetchExpenses() {
         const expenses = response.data.expenses;
         if(response.data.premium) {
         document.getElementById('buy-premium').style.display = 'none'; // Hide the button
+        document.getElementById('show-leaderboard').style.display = 'block'; 
         document.getElementById('premium-status').textContent = '🌟 Premium Member';
         }
         displayExpenses(expenses);
@@ -20,6 +21,49 @@ async function fetchExpenses() {
         displayMessage('Failed to load expenses.', 'error');
     }
 }
+
+document.getElementById('show-leaderboard').addEventListener('click', async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Authentication token not found. Please log in.');
+        return;
+    }
+
+    try {
+        const response = await axios.get('/api/leaderboard', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const leaderboard = response.data.leaderboard;
+        const leaderboardTableBody = document.getElementById('leaderboard-table').querySelector('tbody');
+        leaderboardTableBody.innerHTML = ''; // Clear previous leaderboard
+
+        leaderboard.forEach((user, index) => {
+            const row = document.createElement('tr');
+
+            const rankCell = document.createElement('td');
+            rankCell.textContent = index + 1;
+            row.appendChild(rankCell);
+
+            const nameCell = document.createElement('td');
+            nameCell.textContent = user.name;
+            row.appendChild(nameCell);
+
+            const expenseCell = document.createElement('td');
+            expenseCell.textContent = `₹${user.totalExpense}`;
+            row.appendChild(expenseCell);
+
+            leaderboardTableBody.appendChild(row);
+        });
+
+        // Show the leaderboard
+        document.getElementById('leaderboard-container').style.display = 'block';
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+        alert('Failed to fetch leaderboard.');
+    }
+});
+
 
 // Function to delete expense
 async function deleteExpense(id) {

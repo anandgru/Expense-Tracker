@@ -7,6 +7,7 @@ const Order= require('./models/order');
 const Expense = require('./models/expense');
 const expenseRoutes = require('./routes/expenseRoutes');
 const purchaseRoutes = require('./routes/purchase');
+const leaderboardRoutes = require('./routes/leaderboardRoutes');
 
 
 
@@ -32,6 +33,9 @@ app.get('/dashboard', (req, res) => {
 
 app.use('/user', userRoutes);
 app.use('/purchase', purchaseRoutes);
+
+app.use('/api', leaderboardRoutes);
+
 app.use(expenseRoutes);
 
 
