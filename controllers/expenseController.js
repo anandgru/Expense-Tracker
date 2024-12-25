@@ -2,6 +2,7 @@
 
 //const sequelize = require('../config/database');
 const Expense = require('../models/expense');
+const User = require('../models/user');
 
 // Controller to add a new expense
 exports.addExpense = async (req, res) => {
@@ -14,7 +15,7 @@ exports.addExpense = async (req, res) => {
 
     try {
         const userId = req.user.userId;
-        
+        console.log(userId+' added');
         const expense = await Expense.create({ amount, description, category, userId});
         res.status(201).json(expense);
     } catch (error) {
@@ -28,7 +29,9 @@ exports.getExpenses = async (req, res) => {
     try {
         const userId = req.user.userId;
         const expenses = await Expense.findAll({where : {userId: userId}});
-        res.status(200).json(expenses);
+        const user=await User.findByPk(userId);
+
+        res.status(200).json({expenses: expenses, premium: user.premium});
     } catch (error) {
         console.error('Error fetching expenses:', error);
         res.status(500).json({ message: 'Failed to fetch expenses. 1' });

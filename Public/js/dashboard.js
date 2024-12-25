@@ -5,15 +5,19 @@ async function fetchExpenses() {
         if (!token) {
             throw new Error('No token found.');
         }
-        console.log(token);
+        //console.log(token);
         const response = await axios.get(`/api/expenses`,{
             headers: { Authorization: `Bearer ${token}` },
         });
-        const expenses = response.data;
+        const expenses = response.data.expenses;
+        if(response.data.premium) {
+        document.getElementById('buy-premium').style.display = 'none'; // Hide the button
+        document.getElementById('premium-status').textContent = '🌟 Premium Member';
+        }
         displayExpenses(expenses);
     } catch (error) {
         console.error('Error fetching expenses:', error);
-        displayMessage('Failed to load expenses. 2', 'error');
+        displayMessage('Failed to load expenses.', 'error');
     }
 }
 
@@ -107,7 +111,7 @@ async function addExpense(event) {
             category
         }, 
         {
-            headers: { 
+            headers: {
                 Authorization: `Bearer ${token}` // Add the token in the Authorization header
             }
         }
@@ -140,6 +144,61 @@ if (expenseForm) {
 
 // Fetch and display expenses on page load
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded and parsed');
     fetchExpenses();
+});
+
+document.getElementById('buy-premium').addEventListener('click', async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        displayMessage('Authentication token not found. Please log in again.', 'error');
+        return;
+    }
+    try {
+        const response = await axios.get('/purchase/premium', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        console.log(response.data.orderId, response.data.key_id);
+        const options = {
+            key: response.data.key_id,
+            order_id: response.data.orderId,
+            handler: async function (response) {
+                try {
+                    await axios.post('/purchase/updateOrder', {
+                        orderId: options.order_id,
+                        paymentId: response.razorpay_payment_id,
+                    }, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    alert('Transaction Successful! You are now a premium user.');
+                    document.getElementById('buy-premium').style.display = 'none';
+                    document.getElementById('premium-status').textContent = '🌟 Premium Member';
+                } catch (err) {
+                    console.error('Error updating order:', err);
+                    alert('Transaction was successful, but we could not verify it. Please contact support.');
+                }
+            },
+        };
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+
+        rzp1.on('payment.failed', async function (response) {
+            try {
+                await axios.post('/purchase/updateOrder', {
+                    orderId: options.order_id,
+                    paymentId: null, // Indicate failure
+                }, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                alert('Transaction failed! Order status updated.');
+            } catch (error) {
+                console.error('Error updating failed order:', error);
+                alert('Transaction failed, but we could not update the order status. Please contact support.');
+            }
+        });
+    } catch (error) {
+        console.error('Error during premium purchase:', error);
+        displayMessage('Failed to initiate premium purchase.', 'error');
+    }
 });

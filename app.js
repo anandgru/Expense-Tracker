@@ -3,9 +3,10 @@ const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const User = require('./models/user');
+const Order= require('./models/order');  
 const Expense = require('./models/expense');
 const expenseRoutes = require('./routes/expenseRoutes');
-
+const purchaseRoutes = require('./routes/purchase');
 
 
 
@@ -30,12 +31,19 @@ app.get('/dashboard', (req, res) => {
 });
 
 app.use('/user', userRoutes);
+app.use('/purchase', purchaseRoutes);
 app.use(expenseRoutes);
+
 
 User.hasMany(Expense);
 Expense.belongsTo(User, {constraints:true, onDelete:'CASCADE'});
 
-sequelize.sync()
+User.hasMany(Order);
+Order.belongsTo(User,{constraints:true, onDelete:'CASCADE'});
+
+sequelize
+.sync()
+//.sync({force:true})
 .then((result)=>{
     console.log('Database connected');
 })

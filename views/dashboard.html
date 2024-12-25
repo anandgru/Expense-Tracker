@@ -10,7 +10,10 @@
 </head>
 <body>
     <div class="container">
+        <p id="premium-status"></p>
         <h1>Expense Tracker</h1>
+        <button id="logout-button">Logout</button>
+        <button id="buy-premium" class="buy-premium-button">Buy Premium</button>
         <form  id="expenseForm">
             <label for="amount">Amount:</label>
             <input type="number" id="amount" name="amount" required>
@@ -75,12 +78,18 @@
                 <!-- Expenses will be dynamically inserted here -->
             </tbody>
         </table>
+        <button id="deleteAll">Delete All Expenses</button>
+        <button id="reset">Reset</button>
+    
    
         <!-- Message will be dynamically inserted here -->
          <p id="message">  </p>
 
 
     </div>
+    <!-- Include Razorpay -->
+     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="/js/dashboard.js"></script>
 </body>
 </html>
