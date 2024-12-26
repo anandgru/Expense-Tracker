@@ -55,14 +55,11 @@ exports.loginUser = async (req, res) => {
     // Verify the password
     const isPasswordMatched = await bcrypt.compare(password, user.password);
     if (!isPasswordMatched) {
-      console.log('Aya to');
       return res.status(401).json({ message: 'Invalid password.' });
     }
 
     // Generate JWT token
     const token = jwt.sign({ userId: user.id, email }, JWT_SECRET, { expiresIn: '1h' });
-
-    console.log('Aya to2', token);
 
     // Send the token and user information as a response
     res.status(200).json({

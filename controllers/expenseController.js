@@ -15,7 +15,9 @@ exports.addExpense = async (req, res) => {
 
     try {
         const userId = req.user.userId;
-        console.log(userId+' added');
+        const user = await User.findByPk(userId);
+        user.increment('totalExpenses', { by: amount });
+        user.save();
         const expense = await Expense.create({ amount, description, category, userId});
         res.status(201).json(expense);
     } catch (error) {

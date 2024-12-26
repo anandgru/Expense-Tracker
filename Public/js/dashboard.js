@@ -34,7 +34,7 @@ document.getElementById('show-leaderboard').addEventListener('click', async () =
             headers: { Authorization: `Bearer ${token}` },
         });
 
-        const leaderboard = response.data.leaderboard;
+        const leaderboard = response.data.users;
         const leaderboardTableBody = document.getElementById('leaderboard-table').querySelector('tbody');
         leaderboardTableBody.innerHTML = ''; // Clear previous leaderboard
 
@@ -50,7 +50,7 @@ document.getElementById('show-leaderboard').addEventListener('click', async () =
             row.appendChild(nameCell);
 
             const expenseCell = document.createElement('td');
-            expenseCell.textContent = `₹${user.totalExpense}`;
+            expenseCell.textContent = `₹${user.totalExpenses}`;
             row.appendChild(expenseCell);
 
             leaderboardTableBody.appendChild(row);
@@ -216,8 +216,7 @@ document.getElementById('buy-premium').addEventListener('click', async (e) => {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     alert('Transaction Successful! You are now a premium user.');
-                    document.getElementById('buy-premium').style.display = 'none';
-                    document.getElementById('premium-status').textContent = '🌟 Premium Member';
+                    fetchExpenses();
                 } catch (err) {
                     console.error('Error updating order:', err);
                     alert('Transaction was successful, but we could not verify it. Please contact support.');
