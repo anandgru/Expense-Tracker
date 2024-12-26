@@ -21,4 +21,10 @@ router.get('/signup', (req, res) => {
 
 router.post('/signup', userController.signup);
 
+router.get('/forgot-password', (req, res) => {
+    res.sendFile(path.join(__dirname, "../views","forgot-password.html"));
+});
+
+router.post('/forgot-password', userController.forgotPassword);
+
 module.exports = router;

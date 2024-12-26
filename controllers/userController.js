@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const Sib = require('sib-api-v3-sdk');
+require('dotenv').config();
+
 
 // Secret key for JWT (should be stored securely, e.g., in environment variables)
 const JWT_SECRET = 'abcd';
@@ -72,3 +75,56 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: 'Error during login.' });
   }
 };
+
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required.' });
+  }
+
+const client = Sib.ApiClient.instance;
+const apiKey = client.authentications['api-key'];
+apiKey.apiKey = process.env.API_KEY 
+const tranEmailApi = new Sib.TransactionalEmailsApi();
+
+const sender = {
+    email: 'anandverma6225@gmail.com',
+    name: 'Anand'
+};
+  const emailBody = `
+    Hi [User Name] (if you have it),
+
+    You requested a password reset for your account.
+
+    Click the following link to reset your password:
+    [Reset Link]([Your Website URL]/reset-password)
+
+    This link will expire in [Expiration Time] (e.g., 1 hour).
+
+    If you did not request a password reset, please ignore this email.
+
+    Sincerely,
+
+    The [Your Company Name] Team
+  `;
+
+  const receivers = [{ email: email }];
+
+  const sendSmtpEmail = {
+    sender: sender, // Use the correctly formatted sender object
+    to: receivers,
+    subject: 'Reset Password',
+    htmlContent: emailBody,
+    params: { userName: '[User Name]' },
+  };
+  
+  try {
+    const data = await tranEmailApi.sendTransacEmail(sendSmtpEmail);
+
+    console.log('Password reset email sent successfully');
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+  }
+}
