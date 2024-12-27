@@ -1,0 +1,29 @@
+# Node modules
+node_modules/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+.pnp/
+.pnp.js
+
+# Env files
+.env
+.env.* 
+
+# VSCode settings
+.vscode/
+
+# Optional: If you use a build folder or dist folder
+dist/
+build/
+
+# Optional: If you use test coverage tools
+coverage/
+
+# OS files (ignore macOS, Windows, Linux specific files)
+.DS_Store
+Thumbs.db

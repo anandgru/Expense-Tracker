@@ -4,6 +4,7 @@ const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const User = require('./models/user');
 const Order= require('./models/order');  
+const ForgotPassword = require('./models/ForgotPassword');
 const Expense = require('./models/expense');
 const expenseRoutes = require('./routes/expenseRoutes');
 const purchaseRoutes = require('./routes/purchase');
@@ -44,6 +45,9 @@ Expense.belongsTo(User, {constraints:true, onDelete:'CASCADE'});
 
 User.hasMany(Order);
 Order.belongsTo(User,{constraints:true, onDelete:'CASCADE'});
+
+User.hasMany(ForgotPassword);
+ForgotPassword.belongsTo(User,{constraints:true, onDelete:'CASCADE'});
 
 sequelize
 .sync()

@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const uuid = require('uuid');
+const ForgotPassword = require('../models/ForgotPassword');
 const Sib = require('sib-api-v3-sdk');
 require('dotenv').config();
 
@@ -83,10 +85,27 @@ exports.forgotPassword = async (req, res) => {
   if (!email) {
     return res.status(400).json({ message: 'Email is required.' });
   }
+  try {
+    // Find the user by email
+    const user = await User.findOne({ where: { email } });
+  
+    if (!user) {
+     return res.status(404).json({ message: 'User not found.' });
+    }
+  
+    const resetId = generateUUID();
+  
+    // Create a new forgot password request
+    await ForgotPassword.create({ id: resetId, userId: user.id, isActive: true });
+  
+    const resetUrl = `http://localhost:3000/user/reset-password/${resetId}`;
+  
+    // Send the password reset email
+   // await sendPasswordResetEmail(email, resetUrl);
 
 const client = Sib.ApiClient.instance;
 const apiKey = client.authentications['api-key'];
-apiKey.apiKey = process.env.API_KEY 
+apiKey.apiKey = process.env.API_KEY;
 const tranEmailApi = new Sib.TransactionalEmailsApi();
 
 const sender = {
@@ -97,11 +116,8 @@ const sender = {
     Hi [User Name] (if you have it),
 
     You requested a password reset for your account.
-
     Click the following link to reset your password:
-    [Reset Link]([Your Website URL]/reset-password)
-
-    This link will expire in [Expiration Time] (e.g., 1 hour).
+    [Reset Link]([${resetUrl})
 
     If you did not request a password reset, please ignore this email.
 
@@ -117,14 +133,17 @@ const sender = {
     to: receivers,
     subject: 'Reset Password',
     htmlContent: emailBody,
-    params: { userName: '[User Name]' },
   };
   
-  try {
-    const data = await tranEmailApi.sendTransacEmail(sendSmtpEmail);
+   await tranEmailApi.sendTransacEmail(sendSmtpEmail);
+
 
     console.log('Password reset email sent successfully');
   } catch (error) {
     console.error('Error sending password reset email:', error);
   }
 }
+
+function generateUUID() {
+  return uuid.v4();
+ }
