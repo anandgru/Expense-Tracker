@@ -136,12 +136,40 @@ const sender = {
   };
   
    await tranEmailApi.sendTransacEmail(sendSmtpEmail);
-
-
-    console.log('Password reset email sent successfully');
-  } catch (error) {
+   console.log('Password reset email sent successfully');
+   res.status(200).json({ message: 'Password reset link sent successfully. Please check your inbox.' });
+  } 
+  catch (error) {
     console.error('Error sending password reset email:', error);
   }
+}
+
+exports.resetPassword = async (req, res) => {
+  const resetId = req.params.resetId;
+  const newPassword = req.body.newPassword;
+
+  if (!resetId ||!newPassword) {
+    return res.status(400).json({ message: 'Reset ID and password are required.' });
+  }
+  try {
+          const request = await ForgotPassword.findOne({ where: { id: resetId, isActive: true } });
+          if (!request) {
+            return res.status(400).json({ message: 'Invalid or expired reset link.' });
+          }
+       
+          const userId = request.userId;
+          const hashedPassword = await bcrypt.hash(newPassword, 10); // Hash the password
+       
+          await User.update({ password: hashedPassword }, { where: { id: userId } });
+          await ForgotPassword.update({ isActive: false }, { where: { id: resetId } });
+       
+          res.status(200).json({ message: 'Password updated successfully.' });
+       
+        } catch (error) {
+          console.error('Error updating password:', error);
+          res.status(500).json({ message: 'Failed to update password.' });
+        }
+
 }
 
 function generateUUID() {

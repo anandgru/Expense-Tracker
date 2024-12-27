@@ -1,5 +1,8 @@
 const express = require('express');
 const path = require('path');
+const ForgotPassword = require('../models/ForgotPassword');
+const bcrypt = require('bcrypt');
+const User = require('../models/user');
 const userController = require('../controllers/userController');
 const router = express.Router();
 
@@ -27,51 +30,55 @@ router.get('/forgot-password', (req, res) => {
 
 router.post('/forgot-password', userController.forgotPassword);
 
-router.get('/reset-password/:resetId', async (req, res) => {const resetId = req.params.resetId;
+router.get('/reset-password/:resetId',(req,res)=>{
+    res.sendFile(path.join(__dirname, "../views","reset-password.html"));
+} );
+//     async (req, res) => {const resetId = req.params.resetId;
 
-    try {
-     // Check if the request exists and is active
-     const request = await ForgotPasswordRequest.findOne({ where: { id: resetId, isActive: true } });
+//     try {
+//      // Check if the request exists and is active
+//      const request = await ForgotPassword.findOne({ where: { id: resetId, isActive: true } });
    
-     if (!request) {
-      return res.status(404).json({ message: 'Invalid or expired reset link.' });
-     }
+//      if (!request) {
+//       return res.status(404).json({ message: 'Invalid or expired reset link.' });
+//      }
    
-     // Render a form to update the password
-     res.send(`
-       <form action="/user/update-password" method="POST">
-         <input type="hidden" name="resetId" value="${resetId}">
-         <input type="password" name="newPassword" placeholder="New Password" required>
-         <button type="submit">Update Password</button>
-       </form>
-     `);
-    } catch (error) {
-     console.error('Error verifying forgot password request:', error);
-     res.status(500).json({ message: 'Internal server error.' });
-    }
-   });
+//      // Render a form to update the password
+//      res.send(`
+//        <form action="/user/update-password" method="POST">
+//          <input type="hidden" name="resetId" value="${resetId}">
+//          <input type="password" name="newPassword" placeholder="New Password" required>
+//          <button type="submit">Update Password</button>
+//        </form>
+//      `);
+//     } catch (error) {
+//      console.error('Error verifying forgot password request:', error);
+//      res.status(500).json({ message: 'Internal server error.' });
+//     }
+//    });
 
-   router.post('/update-password', async (req, res) => {
-    const { resetId, newPassword } = req.body;
+   router.post('/reset-password/:resetId', userController.resetPassword);
+//      async (req, res) => {
+//     const { resetId, newPassword } = req.body;
    
-    try {
-      const request = await ForgotPasswordRequest.findOne({ where: { id: resetId, isActive: true } });
-      if (!request) {
-        return res.status(400).json({ message: 'Invalid or expired reset link.' });
-      }
+//     try {
+//       const request = await ForgotPassword.findOne({ where: { id: resetId, isActive: true } });
+//       if (!request) {
+//         return res.status(400).json({ message: 'Invalid or expired reset link.' });
+//       }
    
-      const userId = request.userId;
-      const hashedPassword = await bcrypt.hash(newPassword, 10); // Hash the password
+//       const userId = request.userId;
+//       const hashedPassword = await bcrypt.hash(newPassword, 10); // Hash the password
    
-      await User.update({ password: hashedPassword }, { where: { id: userId } });
-      await ForgotPassword.update({ isActive: false }, { where: { id: resetId } });
+//       await User.update({ password: hashedPassword }, { where: { id: userId } });
+//       await ForgotPassword.update({ isActive: false }, { where: { id: resetId } });
    
-      res.status(200).json({ message: 'Password updated successfully.' });
+//       res.status(200).json({ message: 'Password updated successfully.' });
    
-    } catch (error) {
-      console.error('Error updating password:', error);
-      res.status(500).json({ message: 'Failed to update password.' });
-    }
-   });
+//     } catch (error) {
+//       console.error('Error updating password:', error);
+//       res.status(500).json({ message: 'Failed to update password.' });
+//     }
+//    });
 
 module.exports = router;
