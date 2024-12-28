@@ -14,7 +14,7 @@ body {
 
 /* Container Styling */
 .container {
-  background: linear-gradient(to bottom, #11cbaf, #d5fc25);
+  background: rgba(255, 255, 255, 0.5);
   color: #333;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -281,4 +281,98 @@ td[colspan="5"] {
     padding: 4px 8px;
     font-size: 12px;
   }
+}
+/* Basic Button Styles (Apply to all buttons) */
+button,
+input[type="submit"], /* Include submit buttons */
+input[type="reset"] { /* Include reset buttons */
+  display: inline-block; /* Prevents buttons from stacking vertically if they are next to each other */
+  padding: 12px 24px; /* Comfortable padding */
+  font-size: 16px;
+  font-weight: 500; /* Slightly bolder text */
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px; /* Rounded corners */
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions */
+  user-select: none; /* Prevent text selection on click */
+  -webkit-appearance: none; /* Reset default button styles for WebKit browsers */
+  -moz-appearance: none; /* Reset default button styles for Firefox */
+  appearance: none;
+}
+
+/* Primary Button Style (Use a class like .primary-button) */
+.primary-button {
+  background-color: #007bff; /* Example primary color */
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px); /* Subtle lift on hover */
+}
+
+.primary-button:active {
+  background-color: #004085;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(0); /* Reset transform on click */
+}
+
+/* Secondary Button Style (Use a class like .secondary-button) */
+.secondary-button {
+  background-color: transparent;
+  color: #555;
+  border: 2px solid #ddd;
+}
+
+.secondary-button:hover {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+}
+.secondary-button:active {
+    background-color: #eee;
+}
+
+/* Danger Button Style (Use a class like .danger-button) */
+.danger-button {
+  background-color: #dc3545; /* Reddish color for danger actions */
+  color: #fff;
+}
+
+.danger-button:hover {
+  background-color: #bd2130;
+}
+
+.danger-button:active {
+    background-color: #a71d2a;
+}
+
+/* Disabled Button Style */
+button:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Small Button Modifier (Use a class like .btn-small) */
+.btn-small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+/* Large Button Modifier (Use a class like .btn-large) */
+.btn-large {
+  padding: 16px 32px;
+  font-size: 18px;
+}
+
+/* Full Width Button Modifier (Use a class like .btn-block) */
+.btn-block {
+    display: block;
+    width: 100%;
 }

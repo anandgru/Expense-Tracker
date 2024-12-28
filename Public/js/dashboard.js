@@ -13,6 +13,7 @@ async function fetchExpenses() {
         if(response.data.premium) {
         document.getElementById('buy-premium').style.display = 'none'; // Hide the button
         document.getElementById('show-leaderboard').style.display = 'block'; 
+        document.getElementById('download').style.display = 'block'; 
         document.getElementById('premium-status').textContent = '🌟 Premium Member';
         }
         displayExpenses(expenses);
