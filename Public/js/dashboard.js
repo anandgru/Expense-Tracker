@@ -1,27 +1,72 @@
 // Function to fetch and display expenses on page load
 const token = localStorage.getItem('authToken');
+let currentPage = 1; // Track the current page
+let totalPages = 1;
 async function fetchExpenses() {
     try {
         if (!token) {
             throw new Error('No token found.');
         }
-        //console.log(token);
-        const response = await axios.get(`/api/expenses`,{
+
+        const response = await axios.get(`/api/expenses?page=${page}`,{
             headers: { Authorization: `Bearer ${token}` },
         });
-        const expenses = response.data.expenses;
+        const { currentPage: serverPage, totalPages: serverTotalPages } = response.data.expenses;
+
+        currentPage = serverPage;
+        totalPages = serverTotalPages;
+        const expenses = response.data.expenses.expenses;
         if(response.data.premium) {
         document.getElementById('buy-premium').style.display = 'none'; // Hide the button
         document.getElementById('show-leaderboard').style.display = 'block'; 
         document.getElementById('download').style.display = 'block'; 
         document.getElementById('premium-status').textContent = '🌟 Premium Member';
         }
+        updatePaginationControls();
+
         displayExpenses(expenses);
     } catch (error) {
         console.error('Error fetching expenses:', error);
         displayMessage('Failed to load expenses.', 'error');
     }
 }
+
+document.getElementById('download').addEventListener('click', async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Authentication token not found. Please log in.');
+        return;
+    }
+    try {
+        const response = await axios.get('/api/expenses/download', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status === 200) {
+            const fileURL = response.data.fileURL;
+
+            // Check if file URL exists
+            if (fileURL) {
+                const link = document.createElement('a');
+                link.href = fileURL;
+                link.download = 'Expense.txt'; // Name of the file to be downloaded
+                
+                link.click();
+            } else {
+                console.error('No file URL received.');
+                displayMessage('Failed to download expenses. No URL received.', 'error');
+            }
+        } else {
+            console.error('Failed to download expenses:', response.data.message);
+            displayMessage('Failed to download expenses.', 'error');
+        }
+    } catch (error) {
+        console.error('Error downloading expenses:', error);
+        displayMessage('Failed to download expenses.', 'error');
+    }
+});
+
+
 
 document.getElementById('show-leaderboard').addEventListener('click', async () => {
     const token = localStorage.getItem('authToken');
@@ -246,3 +291,26 @@ document.getElementById('buy-premium').addEventListener('click', async (e) => {
         displayMessage('Failed to initiate premium purchase.', 'error');
     }
 });
+
+function updatePaginationControls() {
+    const paginationContainer = document.getElementById('pagination-controls');
+    paginationContainer.innerHTML = ''; // Clear existing buttons
+
+    if (currentPage > 1) {
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Previous';
+        prevButton.onclick = () => fetchExpenses(currentPage - 1);
+        paginationContainer.appendChild(prevButton);
+    }
+
+    const pageInfo = document.createElement('span');
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    paginationContainer.appendChild(pageInfo);
+
+    if (currentPage < totalPages) {
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.onclick = () => fetchExpenses(currentPage + 1);
+        paginationContainer.appendChild(nextButton);
+    }
+}

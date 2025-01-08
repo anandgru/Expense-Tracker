@@ -1,14 +1,14 @@
 const jwt=require('jsonwebtoken');
+const User = require('./models/user');
 
-const jwtAuthMiddleware=(req, res, next) =>{
+const jwtAuthMiddleware=async (req, res, next) =>{
     const token=req.headers.authorization?.split(' ')[1];
     if(!token){
         return res.status(401).json({message:'Token not provided'});
     }
     try{
         const decoded=jwt.verify(token,'abcd');
-        req.user=decoded;
-        //res.user = decoded;
+        req.user = await User.findByPk(decoded.userId);
         next();
     }catch(error){
         console.log('Error in JWT parsing:',token);

@@ -1,11 +1,10 @@
-// controllers/expenseController.js
-
-//const sequelize = require('../config/database');
 const Expense = require('../models/expense');
 const User = require('../models/user');
-
 // Controller to add a new expense
-const { sequelize } = require('../config/database'); // Assuming sequelize instance is exported in your models
+const sequelize = require('../config/database'); // Assuming sequelize instance is exported in your models
+const { getExpenses } = require('../services/userServices');
+const { uploadToS3 } = require('../services/S3services');
+
 
 exports.addExpense = async (req, res) => {
     const { amount, description, category } = req.body;
@@ -46,11 +45,9 @@ exports.addExpense = async (req, res) => {
 // Controller to get all expenses for a user
 exports.getExpenses = async (req, res) => {
     try {
-        const userId = req.user.userId;
-        const expenses = await Expense.findAll({where : {userId: userId}});
-        const user=await User.findByPk(userId);
+        const expenses = await getExpenses(req, res);
 
-        res.status(200).json({expenses: expenses, premium: user.premium});
+        res.status(200).json({expenses: expenses, premium: req.user.premium});
     } catch (error) {
         console.error('Error fetching expenses:', error);
         res.status(500).json({ message: 'Failed to fetch expenses. 1' });
@@ -90,5 +87,28 @@ exports.deleteExpense = async (req, res) => {
     } catch (error) {
         console.error('Error deleting expense:', error);
         return res.status(500).json({ message: 'Failed to delete expense.' });
+    }
+};
+
+
+
+
+// Controller to download an expense and upload it to S3
+exports.downloadExpenses = async (req, res) => {
+    try {
+        const expenses = await getExpenses(req);
+        const stringifiedExpenses = JSON.stringify(expenses);
+
+        const fileName = `Expense${req.user.id}/${new Date().toISOString()}.txt`;  // This is already correctly formatted
+
+        // Upload the expenses data to S3
+        const fileURL = await uploadToS3(stringifiedExpenses, fileName);
+        console.log(`File URL: ${fileURL}`);
+
+        // Send the file URL in the response
+        res.status(200).json({ fileURL, success: true });
+    } catch (error) {
+        console.error('Error downloading expenses:', error);
+        res.status(500).json({ message: 'Failed to download expenses.' });
     }
 };
