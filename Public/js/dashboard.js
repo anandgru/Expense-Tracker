@@ -2,7 +2,7 @@
 const token = localStorage.getItem('authToken');
 let currentPage = 1; // Track the current page
 let totalPages = 1;
-async function fetchExpenses() {
+async function fetchExpenses(page=1) {
     try {
         if (!token) {
             throw new Error('No token found.');
@@ -11,12 +11,11 @@ async function fetchExpenses() {
         const response = await axios.get(`/api/expenses?page=${page}`,{
             headers: { Authorization: `Bearer ${token}` },
         });
-        const { currentPage: serverPage, totalPages: serverTotalPages } = response.data.expenses;
+        const { premium, expenses, currentPage: serverPage, totalPages: serverTotalPages } = response.data;
 
         currentPage = serverPage;
         totalPages = serverTotalPages;
-        const expenses = response.data.expenses.expenses;
-        if(response.data.premium) {
+        if(premium) {
         document.getElementById('buy-premium').style.display = 'none'; // Hide the button
         document.getElementById('show-leaderboard').style.display = 'block'; 
         document.getElementById('download').style.display = 'block'; 
@@ -299,7 +298,7 @@ function updatePaginationControls() {
     if (currentPage > 1) {
         const prevButton = document.createElement('button');
         prevButton.textContent = 'Previous';
-        prevButton.onclick = () => fetchExpenses(currentPage - 1);
+        prevButton.onclick = () => fetchExpenses(currentPage-1);
         paginationContainer.appendChild(prevButton);
     }
 
@@ -310,7 +309,7 @@ function updatePaginationControls() {
     if (currentPage < totalPages) {
         const nextButton = document.createElement('button');
         nextButton.textContent = 'Next';
-        nextButton.onclick = () => fetchExpenses(currentPage + 1);
+        nextButton.onclick = () => fetchExpenses(currentPage+1);
         paginationContainer.appendChild(nextButton);
     }
 }
