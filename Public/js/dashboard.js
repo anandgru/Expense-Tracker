@@ -2,13 +2,14 @@
 const token = localStorage.getItem('authToken');
 let currentPage = 1; // Track the current page
 let totalPages = 1;
+let expensesPerPage = localStorage.getItem('expensesPerPage') || 10;
 async function fetchExpenses(page=1) {
     try {
         if (!token) {
             throw new Error('No token found.');
         }
 
-        const response = await axios.get(`/api/expenses?page=${page}`,{
+        const response = await axios.get(`/api/expenses?page=${page}&limit=${expensesPerPage}`,{
             headers: { Authorization: `Bearer ${token}` },
         });
         const { premium, expenses, currentPage: serverPage, totalPages: serverTotalPages } = response.data;
@@ -186,8 +187,6 @@ async function addExpense(event) {
     const amount = document.getElementById('amount').value;
     const description = document.getElementById('description').value;
     const category = document.getElementById('category').value;
-    //const userId=req.user.userId;
-
     if (!amount || !description || !category) {
         displayMessage('Please fill in all fields.', 'error');
         return;
@@ -208,7 +207,6 @@ async function addExpense(event) {
         console.log(response.status);
 
         if (response.status === 201) {
-            //displayMessage('Expense added successfully!', 'success');
             fetchExpenses(); // Fetch updated expenses list
             document.getElementById('expenseForm').reset(); // Clear the form
         }
@@ -233,7 +231,9 @@ if (expenseForm) {
 
 // Fetch and display expenses on page load
 document.addEventListener('DOMContentLoaded', () => {
+    setupUserPreferences();
     fetchExpenses();
+
 });
 
 document.getElementById('buy-premium').addEventListener('click', async (e) => {
@@ -312,4 +312,29 @@ function updatePaginationControls() {
         nextButton.onclick = () => fetchExpenses(currentPage+1);
         paginationContainer.appendChild(nextButton);
     }
+}
+function setupUserPreferences() {
+    const preferencesContainer = document.getElementById('preferences-container');
+
+    const label = document.createElement('label');
+    label.textContent = 'Expenses per page:';
+    preferencesContainer.appendChild(label);
+
+    const select = document.createElement('select');
+    [5, 8, 10, 20, 40].forEach((option) => {
+        const opt = document.createElement('option');
+        opt.value = option;
+        opt.textContent = option;
+        if (parseInt(expensesPerPage) === option) {
+            opt.selected = true;
+        }
+        select.appendChild(opt);
+    });
+    preferencesContainer.appendChild(select);
+
+    select.onchange = () => {
+        expensesPerPage = select.value;
+        localStorage.setItem('expensesPerPage', expensesPerPage); // Save preference
+        fetchExpenses(1); // Fetch the first page with updated limit
+    };
 }
