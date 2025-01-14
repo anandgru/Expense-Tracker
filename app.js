@@ -1,4 +1,6 @@
 const express = require('express');
+const helmet = require('helmet');
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
@@ -9,14 +11,29 @@ const Expense = require('./models/expense');
 const expenseRoutes = require('./routes/expenseRoutes');
 const purchaseRoutes = require('./routes/purchase');
 const leaderboardRoutes = require('./routes/leaderboardRoutes');
-
-
+const compression = require('compression');
+const morgan = require('morgan');
 
 const path = require('path');
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),{flags: 'a'});
 
 const app = express();
+//app.use(helmet());
 
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://cdn.jsdelivr.net"], // Allow CDN for Axios
+      styleSrc: ["'self'", "https://fonts.googleapis.com"], // Example for fonts
+      // Add any other necessary directives here...
+    }
+  }
+}));
+
+app.use(compression());
+app.use(morgan('combined',{stream: accessLogStream}));
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -60,6 +77,6 @@ sequelize
 });
 
 // Start Server
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log('Server running on http://localhost:3000');
 });
