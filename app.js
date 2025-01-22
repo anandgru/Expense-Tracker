@@ -16,29 +16,20 @@ const morgan = require('morgan');
 
 const path = require('path');
 
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),{flags: 'a'});
+
 
 const app = express();
 //app.use(helmet());
+ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),{flags: 'a'});
+ app.use(express.json());
 
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://cdn.jsdelivr.net"], // Allow CDN for Axios
-      styleSrc: ["'self'", "https://fonts.googleapis.com"], // Example for fonts
-      // Add any other necessary directives here...
-    }
-  }
-}));
+ app.use(express.static(path.join(__dirname, "public")));
+ // Middleware
+ app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(compression());
-app.use(morgan('combined',{stream: accessLogStream}));
-app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "public")));
-// Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
+ app.use(compression());
+ app.use(morgan('combined',{stream: accessLogStream}));
 
 
 // Routes
@@ -56,6 +47,7 @@ app.use('/api', leaderboardRoutes);
 
 app.use(expenseRoutes);
 
+app.use(helmet());
 
 User.hasMany(Expense);
 Expense.belongsTo(User, {constraints:true, onDelete:'CASCADE'});

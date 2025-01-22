@@ -338,3 +338,8 @@ function setupUserPreferences() {
         fetchExpenses(1); // Fetch the first page with updated limit
     };
 }
+
+document.getElementById('logout-button').onclick = () =>{
+    localStorage.removeItem('authToken');
+    window.location.href = '/user/login'; // Redirect to login page after logout
+}

@@ -286,7 +286,7 @@ td[colspan="5"] {
 button,
 input[type="submit"], /* Include submit buttons */
 input[type="reset"] { /* Include reset buttons */
-  display: inline-block; /* Prevents buttons from stacking vertically if they are next to each other */
+  display: inline-block;
   padding: 12px 24px; /* Comfortable padding */
   font-size: 16px;
   font-weight: 500; /* Slightly bolder text */
@@ -336,9 +336,8 @@ input[type="reset"] { /* Include reset buttons */
     background-color: #eee;
 }
 
-/* Danger Button Style (Use a class like .danger-button) */
 .danger-button {
-  background-color: #dc3545; /* Reddish color for danger actions */
+  background-color: #dc3545; 
   color: #fff;
 }
 
@@ -359,7 +358,6 @@ input[type="reset"]:disabled {
   box-shadow: none;
 }
 
-/* Small Button Modifier (Use a class like .btn-small) */
 .btn-small {
   padding: 8px 16px;
   font-size: 14px;

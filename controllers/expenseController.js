@@ -58,7 +58,7 @@ exports.deleteExpense = async (req, res) => {
     if (!id) {
       return res.status(400).json({ message: "Expense ID is required." });
     }
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     const transaction = await sequelize.transaction();
     // Find the user and decrement total expenses within the transaction
@@ -88,7 +88,10 @@ exports.deleteExpense = async (req, res) => {
 // Controller to download an expense and upload it to S3
 exports.downloadExpenses = async (req, res) => {
   try {
-    const expenses = await getExpenses(req);
+    // Fetch all expenses for the user
+    const userId = req.user.id;
+    const expenses = await Expense.findAll({where: {userId}});
+    
     const stringifiedExpenses = JSON.stringify(expenses);
 
     const fileName = `Expense${req.user.id}/${new Date().toISOString()}.txt`; // This is already correctly formatted

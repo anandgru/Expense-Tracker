@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const path = require('path');
 const uuid = require('uuid');
 const ForgotPassword = require('../models/ForgotPassword');
 const Sib = require('sib-api-v3-sdk');
@@ -9,7 +8,6 @@ require('dotenv').config();
 
 
 // Secret key for JWT (should be stored securely, e.g., in environment variables)
-const JWT_SECRET = 'abcd';
 
 exports.signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -28,7 +26,7 @@ exports.signup = async (req, res) => {
     const newUser = await User.create({ name, email, password: hashedPassword });
 
     // Generate JWT token
-    const token = jwt.sign({ userId: newUser.id, email }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: newUser.id, email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     // Send the token and user information as a response
     res.status(201).json({
@@ -62,10 +60,10 @@ exports.loginUser = async (req, res) => {
     if (!isPasswordMatched) {
       return res.status(401).json({ message: 'Invalid password.' });
     }
-
+    console.log('Token Generation: ' + isPasswordMatched);
     // Generate JWT token
-    const token = jwt.sign({ userId: user.id, email }, JWT_SECRET, { expiresIn: '1h' });
-
+    const token = jwt.sign({ userId: user.id, email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    console.log('Token Generation: ' + isPasswordMatched);
     // Send the token and user information as a response
     res.status(200).json({
       message: 'Login successful!',

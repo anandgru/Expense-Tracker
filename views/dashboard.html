@@ -29,7 +29,7 @@
 </div>
 
         <h1>Expense Tracker</h1>
-        <button id="logout-button">Logout</button>
+        <button id="logout-button" class="primary-button">Logout</button>
         <button id="buy-premium" class="buy-premium-button">Buy Premium</button>
         <form  id="expenseForm">
             <label for="amount">Amount:</label>
@@ -75,7 +75,8 @@
                 <option value="Miscellaneous">Miscellaneous</option>
             </select>
             
-            <button type="submit">Add Expense</button>
+            <button type="submit" class="primary-button">Add Expense</button>
+            <button type ="reset" class="primary-button">Reset</button>
         </form>
    
         
@@ -102,8 +103,10 @@
             <!-- Pagination buttons will be dynamically added here -->
         </div>
         <button id="download" style="display: none;" >Download</button>
-        <button id="deleteAll">Delete All Expenses</button>
-        <button id="reset">Reset</button>
+        <button id="deleteAll" class="danger-button">Delete All Expenses</button>
+        
+        <button id="deleteAccount" class="danger-button">Delete Account</button>
+
     
    
         <!-- Message will be dynamically inserted here -->

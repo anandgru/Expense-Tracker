@@ -7,8 +7,8 @@ const { request } = require('express');
 const purchasePremium = async (req, res) => {
     try {
         const rzp = new Razorpay({
-            key_id: 'rzp_test_N7VlD9IFJY3pef',
-            key_secret: 'MW2dSOmq0fGpwrP6iToeytoq',
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_KEY_SECRET,
         });
 
         const amount = 900;
@@ -22,7 +22,7 @@ const purchasePremium = async (req, res) => {
 
             try {
                 // Check if req.user is defined
-                if (!req.user || !req.user.userId) {
+                if (!req.user || !req.user.id) {
                     return res.status(401).json({ message: 'User not authenticated.' });
                 }
 
